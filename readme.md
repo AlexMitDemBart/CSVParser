@@ -1,5 +1,3 @@
-https://img.shields.io/github/languages/code-size/AlexMitDemBart/CSVParser?style=for-the-badge
-
 # CSV Parser
 
 ## Description

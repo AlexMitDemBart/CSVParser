@@ -12,15 +12,15 @@ and returns a csv formatted string.
 
 To mark a class as parsable for the CSV Parser add the annotation like below:
 ```java
-**@CSVEntity**
+@CSVEntity
 public class Person {
 ```
 
 To mark fields of a class for the CSV Parser do following:
 ```java
-    **@CSVField**
+    @CSVField
     private String name;
-    **@CSVField**
+    @CSVField
     private String surname;
 ```
 

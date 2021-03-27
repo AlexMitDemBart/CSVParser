@@ -12,15 +12,11 @@ import java.util.List;
 
 public class CSVParser<T> {
 
-    private List<String> elementsToParse = new ArrayList();
-    private HashSet<String> headers = new HashSet<>();
+    private final List<String> elementsToParse = new ArrayList();
+    private final HashSet<String> headers = new HashSet<>();
 
     public List<String> getElementsToParse() {
         return elementsToParse;
-    }
-
-    public void setElementsToParse(List<String> elementsToParse) {
-        this.elementsToParse = elementsToParse;
     }
 
     public boolean isParsable(T object){

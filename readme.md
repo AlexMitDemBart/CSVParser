@@ -5,7 +5,7 @@
 # CSV Parser
 
 ## Description
-CSV parser which works with generic types and annotations.<br/>
+CSV parser which works with generic types and annotations. Parses parsable objects to csv represented string<br/>
 No use of third party libraries.
 
 

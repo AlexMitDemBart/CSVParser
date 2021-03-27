@@ -7,11 +7,13 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class CSVParser<T> {
 
     private List<String> elementsToParse = new ArrayList();
+    private HashSet<String> headers = new HashSet<>();
 
     public List<String> getElementsToParse() {
         return elementsToParse;
@@ -33,6 +35,7 @@ public class CSVParser<T> {
                 try {
                     PropertyDescriptor pd = new PropertyDescriptor(field.getName(), object.getClass());
                     elementsToParse.add((String)pd.getReadMethod().invoke(object));
+                    headers.add(pd.getName());
                 } catch (IntrospectionException | IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
@@ -41,20 +44,29 @@ public class CSVParser<T> {
         return toCsvRepresentation(elementsToParse);
     }
 
-    //TODO: Implement headers and line breaks
-    public String toCsvRepresentation(List<String> elements){
+    public String toCsvRepresentation(List<String> elements) {
         StringBuilder sb = new StringBuilder();
+        int counter = 0;
 
-        for(String element : elements){
-            sb.append(element).append(",");
+        for (String header : headers) {
+            sb.append(header).append(",");
         }
 
-        String csvString = sb.toString();
+        if (sb.length() > 0) {
+            sb.deleteCharAt(sb.length()-1);
+            sb.append(System.getProperty("line.separator"));
 
-        if(csvString.length() > 0)
-            csvString = csvString.substring(0, csvString.length() -1);
+            for (String element : elements) {
+                if(counter > 0 && counter % headers.size() == 0){
+                    sb.append(System.getProperty("line.separator"));
+                }
+                sb.append(element).append(",");
+                counter++;
+            }
 
-        return csvString;
+            sb.deleteCharAt(sb.length()-1);
+            sb.append(System.getProperty("line.separator"));
+        }
+        return sb.toString();
     }
-
 }

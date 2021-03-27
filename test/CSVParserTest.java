@@ -28,9 +28,6 @@ public class CSVParserTest {
 
     @Test
     public void parsing(){
-        String parsedValues = csvParser.parse(new ArrayList<Person>(Arrays.asList(person)));
-        System.out.println(parsedValues);
-
         String parsedValues2 = csvParser.parse(persons);
         System.out.println(parsedValues2);
     }

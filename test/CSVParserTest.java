@@ -35,8 +35,8 @@ public class CSVParserTest {
 
     @Test
     public void parsable(){
-        assertTrue(csvParser.objectIsParsable(person));
-        assertFalse(csvParser2.objectIsParsable(5));
+        assertTrue(csvParser.isObjectParsable(person));
+        assertFalse(csvParser2.isObjectParsable(5));
     }
 
     @Test
@@ -56,7 +56,7 @@ public class CSVParserTest {
     @Test
     public void csvFileIsParsable() throws IOException {
         var parser = new CSVParser<Person>(Person.class);
-        assertTrue(parser.csvFileIsParsable("test/validCsvFile"));
-        assertFalse(parser.csvFileIsParsable("test/invalidCsvFile"));
+        assertTrue(parser.isCsvFileParsable("test/validCsvFile"));
+        assertFalse(parser.isCsvFileParsable("test/invalidCsvFile"));
     }
 }

@@ -1,7 +1,7 @@
 package module;
 
 import annotation.CSVEntity;
-import entity.Person;
+import annotation.CSVField;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -9,14 +9,16 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.nio.charset.CharacterCodingException;
 import java.util.*;
 
 public class CSVParser<T> {
 
+    private static final Character COMMA_SEPARATOR = ',';
+    private static final String COLUMN_DELIMITER = "\"";
+
     private final List<String> elementsToParse = new ArrayList();
     private final HashSet<String> headers = new HashSet<>();
-    private Class<T> clazz;
+    private final Class<T> clazz;
 
     public CSVParser(Class<T> clazz) {
         this.clazz = clazz;
@@ -26,11 +28,13 @@ public class CSVParser<T> {
         return elementsToParse;
     }
 
-    public boolean objectIsParsable(T object){
+    public boolean isObjectParsable(T object){
+        //TODO CSVEntity exception with class information
         return object.getClass().isAnnotationPresent(CSVEntity.class);
     }
 
-    public boolean csvFileIsParsable(String filePath) {
+    //TODO test for "," in elements
+    public boolean isCsvFileParsable(String filePath) {
         var splitLines = new ArrayList<List<String>>();
         try{
             var inputStream = new FileInputStream(filePath);
@@ -63,10 +67,14 @@ public class CSVParser<T> {
 
             for(Field field : fields){
                 try {
-                    PropertyDescriptor pd = new PropertyDescriptor(field.getName(), object.getClass());
-                    elementsToParse.add((String)pd.getReadMethod().invoke(object));
-                    headers.add(pd.getName());
+                    if(field.isAnnotationPresent(CSVField.class)){
+                        PropertyDescriptor pd = new PropertyDescriptor(field.getName(), object.getClass());
+                        String fieldValue = pd.getReadMethod().invoke(object).toString();
+                        elementsToParse.add(fieldValue);
+                        headers.add(pd.getName());
+                    }
                 } catch (IntrospectionException | IllegalAccessException | InvocationTargetException e) {
+                    //TODO Custom exception with class information
                     e.printStackTrace();
                 }
             }
@@ -103,13 +111,17 @@ public class CSVParser<T> {
         return sb.toString();
     }
 
+    //TODO refactor method
     public static String formatString(String word){
         StringBuilder sb = new StringBuilder();
-        sb.append("\"");
-        if(word.contains("\"") || word.contains(",")){
+        sb.append(COLUMN_DELIMITER);
+        boolean wordContainsColumnDelimiterOrCommaSeparator =
+                word.contains(COLUMN_DELIMITER) || word.contains(COMMA_SEPARATOR.toString());
+
+        if(wordContainsColumnDelimiterOrCommaSeparator){
             for (Character sign : word.toCharArray()){
-                if(sign.equals('"') || sign.equals(',')){
-                    if(sign.equals(',')){
+                if(sign.equals('"') || sign.equals(COMMA_SEPARATOR)){
+                    if(sign.equals(COMMA_SEPARATOR)){
                         sb.append(",\"\"");
                     }else{
                         sb.append("\"\"");
@@ -146,6 +158,7 @@ public class CSVParser<T> {
                 var propertyDescriptor = new PropertyDescriptor(field.getName(), clazz);
                 Method writeMethod = propertyDescriptor.getWriteMethod();
                 object = object == null ? clazz.getDeclaredConstructor().newInstance() : object;
+                //TODO map.get returns only Strings
                 writeMethod.invoke(object, map.get(field.getName()));
             }
             result.add(object);

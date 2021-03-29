@@ -40,7 +40,7 @@ public class CSVParserTest {
     }
 
     @Test
-    public void readCsv() throws IOException, IntrospectionException, InvocationTargetException,
+    public void parseCsvToObject() throws IOException, IntrospectionException, InvocationTargetException,
                 NoSuchMethodException, InstantiationException, IllegalAccessException {
         CSVParser parser = new CSVParser(Person.class);
 
@@ -48,7 +48,7 @@ public class CSVParserTest {
                 new Person("johann","maier"),
                 new Person("stefanie","huber"));
 
-        List<Person> result = parser.readCsvFile("test/csvTest.txt");
+        List<Person> result = parser.parseCsvToObject("test/csvTest.txt");
 
         assertEquals(expected, result);
     }

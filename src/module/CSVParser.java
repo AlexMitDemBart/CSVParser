@@ -125,7 +125,7 @@ public class CSVParser<T> {
         return sb.toString();
     }
 
-    public List<T> readCsvFile(String file) throws IOException, IntrospectionException,
+    public List<T> parseCsvToObject(String file) throws IOException, IntrospectionException,
                 NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         var result = new ArrayList<T>();
         var reader = new BufferedReader(new FileReader(file));

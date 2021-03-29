@@ -4,6 +4,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.beans.IntrospectionException;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -14,8 +17,8 @@ public class CSVParserTest {
 
     private Person person;
     private List<Person> persons = new ArrayList<>(){};
-    private CSVParser<Person> csvParser = new CSVParser<>();
-    private CSVParser<Integer> csvParser2 = new CSVParser<>();
+    private CSVParser<Person> csvParser = new CSVParser<>(Person.class);
+    private CSVParser<Integer> csvParser2 = new CSVParser<>(Integer.class);
 
     @BeforeEach
     public void init(){
@@ -38,4 +41,17 @@ public class CSVParserTest {
         assertFalse(csvParser2.isParsable(5));
     }
 
+    @Test
+    public void readCsv() throws IOException, IntrospectionException, InvocationTargetException,
+                NoSuchMethodException, InstantiationException, IllegalAccessException {
+        CSVParser parser = new CSVParser(Person.class);
+
+        List<Person> expected = List.of(
+                new Person("johann","maier"),
+                new Person("stefanie","huber"));
+
+        List<Person> result = parser.readCsvFile("test/csvTest.txt");
+
+        assertEquals(expected, result);
+    }
 }

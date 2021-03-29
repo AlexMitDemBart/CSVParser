@@ -1,19 +1,27 @@
 package module;
 
 import annotation.CSVEntity;
+import entity.Person;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.lang.reflect.Method;
+import java.util.*;
 
 public class CSVParser<T> {
 
     private final List<String> elementsToParse = new ArrayList();
     private final HashSet<String> headers = new HashSet<>();
+    private Class<T> clazz;
+
+    public CSVParser(Class<T> clazz) {
+        this.clazz = clazz;
+    }
 
     public List<String> getElementsToParse() {
         return elementsToParse;
@@ -89,5 +97,35 @@ public class CSVParser<T> {
         }
         sb.append("\"");
         return sb.toString();
+    }
+
+    public List<T> readCsvFile(String file) throws IOException, IntrospectionException,
+                NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        var result = new ArrayList<T>();
+        var reader = new BufferedReader(new FileReader(file));
+        var map = new HashMap<String, String>();
+
+        String header = reader.readLine();
+        String[] keys = header.split(",");
+        String line = null;
+
+        while ((line = reader.readLine()) != null) {
+            String[] values = line.split(",");
+            for (int i = 0; i < keys.length; i++) {
+                map.put(keys[i], values[i]);
+            }
+
+            T object = null;
+            for(Field field : clazz.getDeclaredFields()){
+                var propertyDescriptor = new PropertyDescriptor(field.getName(), clazz);
+                Method writeMethod = propertyDescriptor.getWriteMethod();
+                object = object == null ? clazz.getDeclaredConstructor().newInstance() : object;
+                writeMethod.invoke(object, map.get(field.getName()));
+            }
+            result.add(object);
+        }
+        reader.close();
+
+        return result;
     }
 }

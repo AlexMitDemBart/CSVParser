@@ -20,11 +20,11 @@ public class CSVParserTest {
 
     @BeforeEach
     public void init(){
-        person = new Person("Max", "Muster");
+        person = new Person("Max", "Muster",34);
 
-        persons.add(new Person("Max\"", "Muster"));
-        persons.add(new Person("Herbert", "Janzen\" moinsen"));
-        persons.add(new Person("Verena", "Hof,stadt"));
+        persons.add(new Person("Max\"", "Muster",40));
+        persons.add(new Person("Herbert", "Janzen\" moinsen",29));
+        persons.add(new Person("Verena", "Hof,stadt",30));
     }
 
     @Test
@@ -45,8 +45,8 @@ public class CSVParserTest {
         var parser = new CSVParser<Person>(Person.class);
 
         List<Person> expected = List.of(
-                new Person("johann","maier"),
-                new Person("stefanie","huber"));
+                new Person("johann","maier",23),
+                new Person("ste\"fanie","huber",40));
 
         List<Person> result = parser.parseCsvToObject("test/validCsvFile");
 

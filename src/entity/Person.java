@@ -13,11 +13,23 @@ public class Person {
     @CSVField
     private String surname;
 
+    @CSVField
+    private Integer age;
+
     public Person() {}
 
-    public Person(String name, String surname) {
+    public Person(String name, String surname, Integer age) {
         this.name = name;
         this.surname = surname;
+        this.age = age;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
     }
 
     public String getName() {

@@ -141,14 +141,14 @@ public class CSVParser<T> {
                 NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         var result = new ArrayList<T>();
         var reader = new BufferedReader(new FileReader(file));
-        var map = new HashMap<String, String>();
+        var map = new HashMap<Object, Object>();
 
         String header = reader.readLine();
-        String[] keys = header.split(",");
+        Object[] keys = header.split(",");
         String line = null;
 
         while ((line = reader.readLine()) != null) {
-            String[] values = line.split(",");
+            Object[] values = line.split(",");
             for (int i = 0; i < keys.length; i++) {
                 map.put(keys[i], values[i]);
             }
@@ -158,7 +158,7 @@ public class CSVParser<T> {
                 var propertyDescriptor = new PropertyDescriptor(field.getName(), clazz);
                 Method writeMethod = propertyDescriptor.getWriteMethod();
                 object = object == null ? clazz.getDeclaredConstructor().newInstance() : object;
-                //TODO map.get returns only Strings
+                //TODO map.get returns only Strings -> illegalArgumentException with other Setter types
                 writeMethod.invoke(object, map.get(field.getName()));
             }
             result.add(object);
@@ -167,4 +167,6 @@ public class CSVParser<T> {
 
         return result;
     }
+
+
 }

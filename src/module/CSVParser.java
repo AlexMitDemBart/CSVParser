@@ -54,15 +54,40 @@ public class CSVParser<T> {
 
             for (String element : elements) {
                 if(counter > 0 && counter % headers.size() == 0){
+                    sb.deleteCharAt(sb.length()-1);
                     sb.append(System.getProperty("line.separator"));
                 }
-                sb.append(element).append(",");
+
+                sb.append(formatString(element)).append(",");
+
                 counter++;
             }
 
             sb.deleteCharAt(sb.length()-1);
             sb.append(System.getProperty("line.separator"));
         }
+        return sb.toString();
+    }
+
+    public static String formatString(String word){
+        StringBuilder sb = new StringBuilder();
+        sb.append("\"");
+        if(word.contains("\"") || word.contains(",")){
+            for (Character sign : word.toCharArray()){
+                if(sign.equals('"') || sign.equals(',')){
+                    if(sign.equals(',')){
+                        sb.append(",\"\"");
+                    }else{
+                        sb.append("\"\"");
+                    }
+                }else{
+                    sb.append(sign);
+                }
+            }
+        }else{
+            sb.append(word);
+        }
+        sb.append("\"");
         return sb.toString();
     }
 }

@@ -21,9 +21,9 @@ public class CSVParserTest {
     public void init(){
         person = new Person("Max", "Muster");
 
-        persons.add(new Person("Max", "Muster"));
-        persons.add(new Person("Herbert", "Janzen"));
-        persons.add(new Person("Verena", "Hofstadt"));
+        persons.add(new Person("Max\"", "Muster"));
+        persons.add(new Person("Herbert", "Janzen\" moinsen"));
+        persons.add(new Person("Verena", "Hof,stadt"));
     }
 
     @Test

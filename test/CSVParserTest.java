@@ -1,6 +1,5 @@
 import entity.Person;
 import module.CSVParser;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -8,7 +7,6 @@ import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,8 +35,8 @@ public class CSVParserTest {
 
     @Test
     public void parsable(){
-        assertTrue(csvParser.isParsable(person));
-        assertFalse(csvParser2.isParsable(5));
+        assertTrue(csvParser.objectIsParsable(person));
+        assertFalse(csvParser2.objectIsParsable(5));
     }
 
     @Test
@@ -53,5 +51,11 @@ public class CSVParserTest {
         List<Person> result = parser.readCsvFile("test/csvTest.txt");
 
         assertEquals(expected, result);
+    }
+
+    @Test
+    public void csvFileIsParsable() throws IOException {
+        CSVParser parser = new CSVParser(Person.class);
+        assertTrue(parser.csvFileIsParsable("test/csvTest.txt"));
     }
 }

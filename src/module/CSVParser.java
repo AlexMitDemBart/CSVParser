@@ -5,12 +5,11 @@ import entity.Person;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.CharacterCodingException;
 import java.util.*;
 
 public class CSVParser<T> {
@@ -27,8 +26,35 @@ public class CSVParser<T> {
         return elementsToParse;
     }
 
-    public boolean isParsable(T object){
+    public boolean objectIsParsable(T object){
         return object.getClass().isAnnotationPresent(CSVEntity.class);
+    }
+
+    public boolean csvFileIsParsable(String filePath) {
+        var splitLines = new ArrayList<List<String>>();
+        try{
+            var inputStream = new FileInputStream(filePath);
+            var reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+
+            String line;
+            int elementPerLine = 0;
+            while((line = reader.readLine()) != null){
+                splitLines.add(Arrays.asList(line.split(",")));
+            }
+            elementPerLine = splitLines.get(0).size();
+
+            for(List<String> elements : splitLines){
+                if(!(elementPerLine == elements.size()))
+                    return false;
+            }
+        }catch(UnsupportedEncodingException e){
+            return false;
+        }catch(IOException e){
+            e.printStackTrace();
+            e.getMessage();
+        }
+
+        return true;
     }
 
     public String parse(List<T> objects){

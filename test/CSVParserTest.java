@@ -14,9 +14,9 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CSVParserTest {
 
     private Person person;
-    private List<Person> persons = new ArrayList<>(){};
-    private CSVParser<Person> csvParser = new CSVParser<>(Person.class);
-    private CSVParser<Integer> csvParser2 = new CSVParser<>(Integer.class);
+    private final List<Person> persons = new ArrayList<>(){};
+    private final CSVParser<Person> csvParser = new CSVParser<>(Person.class);
+    private final CSVParser<Integer> csvParser2 = new CSVParser<>(Integer.class);
 
     @BeforeEach
     public void init(){
@@ -42,20 +42,21 @@ public class CSVParserTest {
     @Test
     public void parseCsvToObject() throws IOException, IntrospectionException, InvocationTargetException,
                 NoSuchMethodException, InstantiationException, IllegalAccessException {
-        CSVParser parser = new CSVParser(Person.class);
+        var parser = new CSVParser<Person>(Person.class);
 
         List<Person> expected = List.of(
                 new Person("johann","maier"),
                 new Person("stefanie","huber"));
 
-        List<Person> result = parser.parseCsvToObject("test/csvTest.txt");
+        List<Person> result = parser.parseCsvToObject("test/validCsvFile");
 
         assertEquals(expected, result);
     }
 
     @Test
     public void csvFileIsParsable() throws IOException {
-        CSVParser parser = new CSVParser(Person.class);
-        assertTrue(parser.csvFileIsParsable("test/csvTest.txt"));
+        var parser = new CSVParser<Person>(Person.class);
+        assertTrue(parser.csvFileIsParsable("test/validCsvFile"));
+        assertFalse(parser.csvFileIsParsable("test/invalidCsvFile"));
     }
 }

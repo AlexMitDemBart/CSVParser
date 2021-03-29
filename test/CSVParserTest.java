@@ -1,4 +1,5 @@
 import entity.Person;
+import exception.CSVEntityAnnotationMissingException;
 import module.CSVParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,8 +36,13 @@ public class CSVParserTest {
 
     @Test
     public void parsable(){
-        assertTrue(csvParser.isObjectParsable(person));
-        assertFalse(csvParser2.isObjectParsable(5));
+        try{
+            assertTrue(csvParser.isObjectParsable(person));
+            assertFalse(csvParser2.isObjectParsable(5));
+        } catch (CSVEntityAnnotationMissingException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
     }
 
     @Test

@@ -1,11 +1,10 @@
-![](https://img.shields.io/badge/development-80%25-yellow?style=flat-square&logo=appveyor)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/AlexMitDemBart/CSVParser?style=flat-square)
 ![GitHub last commit](https://img.shields.io/github/last-commit/AlexMitDemBart/CSVParser)
 
 # CSV Parser
 
 ## Description
-CSV parser which works with generic types and annotations.<br/>
+CSV parser which works with generic types and annotations. Parses parsable objects to csv represented string<br/>
 No use of third party libraries.
 
 

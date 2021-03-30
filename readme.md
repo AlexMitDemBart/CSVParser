@@ -31,19 +31,24 @@ To mark fields of a class for the CSV Parser do following:
 
 <span style="color: green;">parse method uses PropertyDescriptor to invoke getters</span>
 ```java
- public String parse(List<T> objects){
+  public String parse(List<T> objects){
         for(T object : objects){
             Field[] fields = object.getClass().getDeclaredFields();
+
             for(Field field : fields){
                 try {
-                    PropertyDescriptor pd = new PropertyDescriptor(field.getName(), object.getClass());
-                    elementsToParse.add((String)pd.getReadMethod().invoke(object));
+                    if(field.isAnnotationPresent(CSVField.class)){
+                        var pd = new PropertyDescriptor(field.getName(), object.getClass());
+                        String fieldValue = pd.getReadMethod().invoke(object).toString();
+                        fieldValuesToParse.add(fieldValue);
+                        headersForCsv.add(pd.getName());
+                    }
                 } catch (IntrospectionException | IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
             }
         }
-        return toCsvRepresentation(elementsToParse);
+        return toCsvRepresentation(fieldValuesToParse);
     }
 ``` 
 

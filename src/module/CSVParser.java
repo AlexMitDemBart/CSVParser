@@ -166,8 +166,9 @@ public class CSVParser<T> {
                 if(object == null)
                     object = clazz.getDeclaredConstructor().newInstance();
 
-                //TODO map.get returns only Strings -> illegalArgumentException with other Setter types
-                writeMethod.invoke(object, map.get(field.getName()));
+                Object oldTypedFieldValue = map.get(field.getName());
+                Object newTypedFieldValue = FieldValueTypeFactory.valueWithFieldType(oldTypedFieldValue, field);
+                writeMethod.invoke(object, newTypedFieldValue);
             }
             result.add(object);
         }

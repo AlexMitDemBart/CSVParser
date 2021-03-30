@@ -38,7 +38,11 @@ public class CSVParserTest {
     public void parsable(){
         try{
             assertTrue(csvParser.isObjectParsable(person));
-            assertFalse(csvParser2.isObjectParsable(5));
+            try{
+                assertFalse(csvParser2.isObjectParsable(5));
+            }catch(CSVEntityAnnotationMissingException e){
+                System.out.println(e.getMessage());
+            }
         } catch (CSVEntityAnnotationMissingException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
